@@ -1250,10 +1250,6 @@ if (!customElements.get('energie-monitoring-card')) {
   customElements.define('energie-monitoring-card', EnergieMonitoringCard);
 }
 
-// Rueckwaertskompatibilitaet fuer bestehende Dashboards
-if (!customElements.get('strom-monitoring-card')) {
-  customElements.define('strom-monitoring-card', class extends EnergieMonitoringCard {});
-}
 
 window.customCards = window.customCards || [];
 window.customCards.push({
@@ -1261,5 +1257,6 @@ window.customCards.push({
   name: 'Energie Monitoring Card',
   description: 'Energie-Monitoring fuer Strom (inkl. Soll/Ist, Ziele und Erweiterungen)'
 });
+
 
 
