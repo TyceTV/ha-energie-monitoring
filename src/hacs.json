@@ -1,0 +1,9 @@
+{
+  "name": "Energie Monitoring Card",
+  "description": "Home Assistant custom card for step-by-step energy monitoring (starting with electricity).",
+  "render_readme": true,
+  "content_in_root": true,
+  "zip_release": false,
+  "filename": "src/energie-monitoring-card.js",
+  "homeassistant": "2023.1.0"
+}

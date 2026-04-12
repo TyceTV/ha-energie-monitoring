@@ -3,13 +3,14 @@
 Eine Home-Assistant-Karte fuer ein schrittweises Energie-Monitoring.
 
 Aktueller Fokus:
-1. Strom-Basis (Hausstrom) einfach und laienfreundlich
+1. Strom-Basis (Hausstrom) einfach und uebersichtlich
 2. Strom-Erweiterungen mit PV/BKW/Speicher
 3. Optionale Module fuer Kosten und Amortisation
 
 Geplante Erweiterung:
 1. Gas
 2. Wasser
+
 ## Installation
 
 ### HACS (empfohlen)
@@ -111,66 +112,6 @@ Was du bekommst:
   - mit `reference_year`: automatische Referenz aus Vorjahresverbrauch
   - ohne verwertbare Vorjahresdaten: Fallback auf `targets` (Hinweis als Plausibilitaetswarnung: Auto-Referenz aktiv)
 
-## Vollkonfiguration (optional)
-
-```yaml
-type: custom:strom-monitoring-card
-
-entity_grid_total_kwh: sensor.stromzahler_verbrauch
-entity_solar_today_kwh: sensor.pv_generation_today
-entity_solar_total_kwh: sensor.pv_generation_total
-entity_solar_export_kwh: sensor.stromzahler_erzeugung
-
-report_year: "2026"
-reference_year: "2025"
-year_start_meter_kwh: 7454
-year_days_mode: auto
-
-targets:
-  year_kwh: 3500
-reference:
-  year_kwh: 4065
-
-thresholds:
-  mode: symmetric
-  good_pct: -5
-  warn_pct: 5
-
-tariff:
-  energy_ct_per_kwh_net: 27.965
-  base_eur_per_year_net: 75.60
-  metering_eur_per_year_net: 18.92
-  vat_pct: 19
-billing:
-  reference_cost_brutto_eur: 1465.25
-  monthly_advance_brutto_eur: 135.00
-
-bkw:
-  enabled: true
-  start_date: "2025-10-01"
-  investment_eur: 1099.99
-  nominal_kwp: 1.72
-  battery_kwh: 2.048
-  feed_in_limit_w: 800
-
-amortization:
-  value_mode: gross_tariff
-  custom_eur_per_kwh: 0.34
-
-ui:
-  title: "Strom-Monitoring"
-  subtitle: "Referenzjahr 2025 · Berichtsjahr 2026"
-  locale: de-DE
-  currency: EUR
-  update_interval_sec: 120
-  show_warnings: true
-  show_sections:
-    table: true
-    bkw: true
-    costs: true
-    amortization: true
-```
-
 ## Wichtige Felder (Kurzueberblick)
 
 - `thresholds.good_pct`: ab welcher negativen Abweichung als Einsparung gilt
@@ -179,41 +120,6 @@ ui:
 - `billing.*`: Referenzkosten/Abschlag
 - `bkw.*`: Balkonkraftwerk-Basisdaten
 - `ui.show_sections.*`: einzelne Bloecke ein-/ausblenden
-
-## Typische Probleme
-
-### "Custom element doesn't exist: strom-monitoring-card"
-- Ressource fehlt/falscher Pfad/falscher Typ
-- Loesung:
-  1. Ressourcen pruefen
-  2. Typ muss `JavaScript-Modul` sein
-  3. `Strg+F5`
-
-### Referenz bleibt leer (`-`)
-- `reference.*` nicht gesetzt und keine automatische Ableitung moeglich
-- fuer Auto-Referenz mindestens `year_start_meter_kwh` setzen
-
-### Jahreswert bleibt leer
-- `year_start_meter_kwh` fehlt oder ist ungueltig
-
-### Einzug soll nicht sichtbar sein
-- `einzug_datum` nicht setzen
-
-## Legacy-Mapping (alt -> neu)
-
-- `entity` -> `entity_grid_total_kwh`
-- `entity_solar_today` -> `entity_solar_today_kwh`
-- `entity_solar_total` -> `entity_solar_total_kwh`
-- `entity_solar_export` -> `entity_solar_export_kwh`
-- `berichtsjahr` -> `report_year`
-- `referenzjahr` -> `reference_year`
-- `jahres_start_kwh` -> `year_start_meter_kwh`
-- `tagesziel` -> `targets.day_kwh`
-- `monatsziel` -> `targets.month_kwh`
-- `jahresziel` -> `targets.year_kwh`
-- `ref_tag` -> `reference.day_kwh`
-- `ref_mon` -> `reference.month_kwh`
-- `ref_jahr` -> `reference.year_kwh`
 
 ## Lizenz
 
@@ -227,4 +133,5 @@ Siehe [CHANGELOG.md](./CHANGELOG.md)
 
 - `kWh`: Kilowattstunde (Energieverbrauch/-erzeugung)
 - `ct/kWh`: Cent pro Kilowattstunde (Arbeitspreis)
+
 
