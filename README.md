@@ -35,7 +35,7 @@ Die Ressource wird normalerweise automatisch angelegt als:
 ### 1) Technisch minimal
 
 ```yaml
-type: custom:strom-monitoring-card
+type: custom:energie-monitoring-card
 entity_grid_total_kwh: sensor.grid_energy_total
 ```
 
@@ -51,7 +51,7 @@ Was du bekommst:
 ### 2) Empfohlen (fuer sinnvolles Monitoring mit Auto-Berechnung)
 
 ```yaml
-type: custom:strom-monitoring-card
+type: custom:energie-monitoring-card
 entity_grid_total_kwh: sensor.stromzahler_verbrauch
 
 report_year: "2026"
@@ -133,5 +133,6 @@ Siehe [CHANGELOG.md](./CHANGELOG.md)
 
 - `kWh`: Kilowattstunde (Energieverbrauch/-erzeugung)
 - `ct/kWh`: Cent pro Kilowattstunde (Arbeitspreis)
+
 
 
