@@ -1,12 +1,15 @@
-﻿# Strom Monitoring Card
+# Energie-Monitoring-Card
 
-Eine Home-Assistant-Karte fuer Strom-Monitoring mit Soll/Ist-Vergleich.
+Eine Home-Assistant-Karte fuer ein schrittweises Energie-Monitoring.
 
-Sie ist fuer 3 Stufen gedacht:
-1. Nur Netzzaehler (technisch minimal)
-2. Netzzaehler + Jahresbasis + Ziele (empfohlen)
-3. Vollausbau mit PV/BKW/Kosten/Amortisation
+Aktueller Fokus:
+1. Strom-Basis (Hausstrom) einfach und laienfreundlich
+2. Strom-Erweiterungen mit PV/BKW/Speicher
+3. Optionale Module fuer Kosten und Amortisation
 
+Geplante Erweiterung:
+1. Gas
+2. Wasser
 ## Installation
 
 ### HACS (empfohlen)
@@ -156,7 +159,7 @@ amortization:
 
 ui:
   title: "Strom-Monitoring"
-  subtitle: "Referenzjahr 2025 · Berichtsjahr 2026"
+  subtitle: "Referenzjahr 2025 � Berichtsjahr 2026"
   locale: de-DE
   currency: EUR
   update_interval_sec: 120
@@ -224,3 +227,4 @@ Siehe [CHANGELOG.md](./CHANGELOG.md)
 
 - `kWh`: Kilowattstunde (Energieverbrauch/-erzeugung)
 - `ct/kWh`: Cent pro Kilowattstunde (Arbeitspreis)
+
