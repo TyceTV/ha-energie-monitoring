@@ -15,18 +15,18 @@ Geplante Erweiterung:
 
 ### HACS (empfohlen)
 1. HACS -> Frontend -> Benutzerdefiniertes Repository hinzufuegen
-2. Repository-URL: `https://github.com/TyceTV/strom-monitoring-card`
+2. Repository-URL: `https://github.com/TyceTV/ha-energie-monitoring`
 3. Typ: `Dashboard`
 4. Installieren
 5. Browser hart neu laden (`Strg+F5`)
 
 Die Ressource wird normalerweise automatisch angelegt als:
-- `/hacsfiles/strom-monitoring-card/strom-monitoring-card.js`
+- `/hacsfiles/ha-energie-monitoring/src/energie-monitoring-card.js`
 
 ### Manuell
-1. `strom-monitoring-card.js` nach `/config/www/` kopieren
+1. `src/energie-monitoring-card.js` nach `/config/www/` kopieren
 2. `Einstellungen -> Dashboards -> Ressourcen -> Ressource hinzufuegen`
-3. URL: `/local/strom-monitoring-card.js`
+3. URL: `/local/energie-monitoring-card.js`
 4. Typ: `JavaScript-Modul`
 5. Browser hart neu laden (`Strg+F5`)
 
