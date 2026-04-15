@@ -135,6 +135,27 @@ Bedeutung:
 - `billing.reference_cost_brutto_eur`: Gesamtjahreskosten brutto des Referenzjahres (laut Rechnung)
 - `billing.monthly_advance_brutto_eur`: monatlicher Abschlag brutto
 
+### PV/BKW-Erweiterung (`bkw` + Solarsensoren)
+
+Fuer den PV/BKW-Block werden zusaetzlich diese Sensoren erwartet:
+
+```yaml
+entity_solar_today_kwh: sensor.pv_generation_today
+entity_solar_total_kwh: sensor.pv_generation_total
+entity_solar_export_kwh: sensor.stromzahler_erzeugung
+```
+
+Optional kann der Modus gesetzt werden:
+
+```yaml
+bkw:
+  enabled: true
+  mode: bkw # bkw|pv
+```
+
+- `mode: bkw` nutzt Bezeichnungen wie "Balkonkraftwerk" und "BKW-Ersparnis"
+- `mode: pv` nutzt Bezeichnungen wie "PV-Anlage" und "PV-Ersparnis"
+
 ## Wichtige Felder (Kurzueberblick)
 
 - `thresholds.good_pct`: ab welcher negativen Abweichung als Einsparung gilt

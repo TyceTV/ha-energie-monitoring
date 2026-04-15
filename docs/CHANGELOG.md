@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.3.0 (2026-04-15)
+- Strom-Erweiterung: PV/BKW-Modus eingefuehrt (`bkw.mode: bkw|pv`) fuer klarere Bezeichnungen in der Karte
+- Reihenfolge der Bereiche optimiert: Kostenblock vor PV/BKW-Block
+- Amortisationsbereich wird nur noch automatisch angezeigt, wenn `amortization` explizit konfiguriert ist
+- Einspeiselimit wird in der UI aus `bkw.feed_in_limit_w` gelesen (kein harter 800-W-Wert mehr)
+- Kostenblock-Beschriftung wechselt passend zwischen `BKW-Ersparnis` und `PV-Ersparnis`
+
 ## v0.2.1 (2026-04-15)
 - UI-Fix: Im Kostenblock wird `BKW-Ersparnis` nur noch angezeigt, wenn PV/BKW wirklich konfiguriert ist
 - Bei reiner Strom-/Tarifkonfiguration ohne PV/BKW bleibt der BKW-Teil ausgeblendet
