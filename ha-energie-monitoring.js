@@ -1,4 +1,4 @@
-class EnergieMonitoringCard extends HTMLElement {
+ï»¿class EnergieMonitoringCard extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -107,8 +107,8 @@ class EnergieMonitoringCard extends HTMLElement {
     const hasCustomSubtitle = hasOwn(ui, 'subtitle') || hasOwn(raw, 'subtitle');
     const autoSubtitle = (hasReportYear || hasReferenceYear)
       ? (String(locale).toLowerCase().startsWith('en')
-        ? ('Reference year ' + referenceYear + ' · Report year ' + reportYear)
-        : ('Referenzjahr ' + referenceYear + ' · Berichtsjahr ' + reportYear))
+        ? ('Reference year ' + referenceYear + ' ï¿½ Report year ' + reportYear)
+        : ('Referenzjahr ' + referenceYear + ' ï¿½ Berichtsjahr ' + reportYear))
       : '';
     const subtitle = this._str(ui.subtitle ?? raw.subtitle, autoSubtitle);
 
@@ -274,11 +274,15 @@ class EnergieMonitoringCard extends HTMLElement {
     const hasExplicitCostsSection = hasOwn(showSections, 'costs');
     const hasExplicitAmortizationSection = hasOwn(showSections, 'amortization');
     const hasSolarEntities = !!(entitySolarToday || entitySolarTotal || entitySolarExport);
-    const hasCostConfig = hasFinite(
+    const hasTariffConfig = hasFinite(
       tariff.energy_ct_per_kwh_net, tariff.base_eur_per_year_net, tariff.metering_eur_per_year_net, tariff.vat_pct,
-      billing.reference_cost_brutto_eur, billing.monthly_advance_brutto_eur,
-      raw.arbeitspreis_ct, raw.grundpreis_jahr, raw.messst_jahr, raw.kosten_2025_brutto, raw.abschlag_brutto
+      raw.arbeitspreis_ct, raw.grundpreis_jahr, raw.messst_jahr
     );
+    const hasBillingConfig = hasFinite(
+      billing.reference_cost_brutto_eur, billing.monthly_advance_brutto_eur,
+      raw.kosten_2025_brutto, raw.abschlag_brutto
+    );
+    const hasCostConfig = hasTariffConfig && hasBillingConfig;
     const autoShowBkw = bkwEnabled && hasSolarEntities;
     const autoShowCosts = hasCostConfig;
     const autoShowAmortization = autoShowBkw && (hasOwn(raw, 'amortization') || hasOwn(raw, 'bkw'));
@@ -306,7 +310,9 @@ class EnergieMonitoringCard extends HTMLElement {
         has_einzug_datum: hasEinzugDatum,
         has_custom_subtitle: hasCustomSubtitle,
         has_targets_config: hasTargetsConfig,
-        has_reference_config: hasReferenceConfig
+        has_reference_config: hasReferenceConfig,
+        has_tariff_config: hasTariffConfig,
+        has_billing_config: hasBillingConfig
       },
       entities: {
         grid_total_kwh: entityGrid,
@@ -703,18 +709,18 @@ class EnergieMonitoringCard extends HTMLElement {
     const locale = cfg.locale || 'de-DE';
     const hasTargets = !!cfg.meta?.has_targets_config;
     const hasRef = !!cfg.meta?.has_reference_config;
-    const fmtNum = (v, d = 1) => Number.isFinite(v) ? v.toFixed(d).replace('.', ',') : '–';
-    const fmtKwh = (v, d = 1) => Number.isFinite(v) ? fmtNum(v, d) + ' kWh' : '–';
+    const fmtNum = (v, d = 1) => Number.isFinite(v) ? v.toFixed(d).replace('.', ',') : 'ï¿½';
+    const fmtKwh = (v, d = 1) => Number.isFinite(v) ? fmtNum(v, d) + ' kWh' : 'ï¿½';
     const rows = [
       {
         z: this._t('period_today', 'Heute', 'Today'),
         zs: now.toLocaleDateString(locale, { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }),
         b: this._t('consumption_day_label', 'Tagesverbrauch (Netz)', 'Daily consumption (grid)'),
         bs: hasTargets
-          ? this._t('day_target_prefix', 'Tagesziel: ', 'Daily target: ') + fmtKwh(cfg.tagesziel, 1) + ' · ' + this._t('prorated_prefix', 'anteilig: ', 'prorated: ') + fmtKwh(targets.dayTarget, 1) + ' (' + Math.round(ctx.h) + 'h)'
-          : '–',
-        r: hasRef && Number.isFinite(cfg.ref_tag) ? fmtNum(cfg.ref_tag, 1) + ' kWh/Tag' : '–',
-        rs: 'Ø' + (cfg.meta?.has_reference_year ? ' ' + cfg.referenzjahr : ''),
+          ? this._t('day_target_prefix', 'Tagesziel: ', 'Daily target: ') + fmtKwh(cfg.tagesziel, 1) + ' ï¿½ ' + this._t('prorated_prefix', 'anteilig: ', 'prorated: ') + fmtKwh(targets.dayTarget, 1) + ' (' + Math.round(ctx.h) + 'h)'
+          : 'ï¿½',
+        r: hasRef && Number.isFinite(cfg.ref_tag) ? fmtNum(cfg.ref_tag, 1) + ' kWh/Tag' : 'ï¿½',
+        rs: 'ï¿½' + (cfg.meta?.has_reference_year ? ' ' + cfg.referenzjahr : ''),
         i: d.day,
         prog: null,
         z2: targets.dayTarget,
@@ -722,12 +728,12 @@ class EnergieMonitoringCard extends HTMLElement {
       },
       {
         z: this._t('period_week', 'Diese Woche', 'This week'),
-        zs: 'Mo–' + now.toLocaleDateString(locale, { weekday: 'short' }) + ' · KW ' + this._kw(now) + ' · ' + ctx.dw + ' von 7 Tagen',
+        zs: 'Moï¿½' + now.toLocaleDateString(locale, { weekday: 'short' }) + ' ï¿½ KW ' + this._kw(now) + ' ï¿½ ' + ctx.dw + ' von 7 Tagen',
         b: this._t('consumption_week_label', 'Wochenverbrauch (Netz)', 'Weekly consumption (grid)'),
         bs: hasTargets
-          ? this._t('prorated_prefix', 'anteilig: ', 'prorated: ') + fmtKwh(targets.weekTarget, 1) + ' · ' + this._t('full_week_prefix', 'Vollwoche: ', 'Full week: ') + fmtKwh(cfg.tagesziel * 7, 1)
-          : '–',
-        r: hasRef && Number.isFinite(cfg.ref_tag) ? fmtKwh(cfg.ref_tag * 7, 1) : '–',
+          ? this._t('prorated_prefix', 'anteilig: ', 'prorated: ') + fmtKwh(targets.weekTarget, 1) + ' ï¿½ ' + this._t('full_week_prefix', 'Vollwoche: ', 'Full week: ') + fmtKwh(cfg.tagesziel * 7, 1)
+          : 'ï¿½',
+        r: hasRef && Number.isFinite(cfg.ref_tag) ? fmtKwh(cfg.ref_tag * 7, 1) : 'ï¿½',
         rs: this._t('projection_prefix', 'Hochrechnung', 'Projection') + (cfg.meta?.has_reference_year ? ' ' + cfg.referenzjahr : ''),
         i: d.week,
         prog: prog.progWoche,
@@ -737,12 +743,12 @@ class EnergieMonitoringCard extends HTMLElement {
       {
         z: now.toLocaleDateString(locale, { month: 'long', year: 'numeric' }),
         zs: hasTargets
-          ? 'Tag ' + ctx.dom + ' von ' + ctx.dim + ' · ' + this._t('prorated_prefix', 'anteilig: ', 'prorated: ') + fmtKwh(targets.monthTarget, 1)
+          ? 'Tag ' + ctx.dom + ' von ' + ctx.dim + ' ï¿½ ' + this._t('prorated_prefix', 'anteilig: ', 'prorated: ') + fmtKwh(targets.monthTarget, 1)
           : 'Tag ' + ctx.dom + ' von ' + ctx.dim,
         b: this._t('consumption_month_label', 'Monatsverbrauch (Netz)', 'Monthly consumption (grid)'),
-        bs: hasTargets ? this._t('full_month_prefix', 'Vollmonatsziel: ', 'Full month target: ') + fmtKwh(cfg.monatsziel, 0) : '–',
-        r: hasRef && Number.isFinite(cfg.ref_mon) ? fmtKwh(cfg.ref_mon, 0) : '–',
-        rs: this._t('reference_short', 'Referenz', 'Reference') + (cfg.meta?.has_reference_year ? ' ' + cfg.referenzjahr : '') + ' (Ø/Monat)',
+        bs: hasTargets ? this._t('full_month_prefix', 'Vollmonatsziel: ', 'Full month target: ') + fmtKwh(cfg.monatsziel, 0) : 'ï¿½',
+        r: hasRef && Number.isFinite(cfg.ref_mon) ? fmtKwh(cfg.ref_mon, 0) : 'ï¿½',
+        rs: this._t('reference_short', 'Referenz', 'Reference') + (cfg.meta?.has_reference_year ? ' ' + cfg.referenzjahr : '') + ' (ï¿½/Monat)',
         i: d.month,
         prog: prog.progMon,
         z2: targets.monthTarget,
@@ -751,13 +757,13 @@ class EnergieMonitoringCard extends HTMLElement {
       {
         z: now.getFullYear().toString(),
         zs: hasTargets
-          ? 'Tag ' + ctx.doy + ' von ' + ctx.yearDays + ' · ' + this._t('prorated_prefix', 'anteilig: ', 'prorated: ') + fmtKwh(targets.yearTarget, 0)
+          ? 'Tag ' + ctx.doy + ' von ' + ctx.yearDays + ' ï¿½ ' + this._t('prorated_prefix', 'anteilig: ', 'prorated: ') + fmtKwh(targets.yearTarget, 0)
           : 'Tag ' + ctx.doy + ' von ' + ctx.yearDays,
         b: this._t('consumption_year_label', 'Jahresverbrauch (Netz)', 'Yearly consumption (grid)'),
         bs: cfg.meta?.has_year_start_kwh
-          ? this._t('meter_start_prefix', 'Zähler 01.01.', 'Meter 01 Jan ') + cfg.berichtsjahr + ': ' + (cfg.jahres_start_kwh !== null ? cfg.jahres_start_kwh.toLocaleString(locale) : '–') + ' kWh ? ' + this._t('current_prefix', 'aktuell: ', 'current: ') + (cur === null ? '–' : cur.toLocaleString(locale, { maximumFractionDigits: 1 })) + ' kWh'
-          : '–',
-        r: hasRef && Number.isFinite(cfg.ref_jahr) ? fmtKwh(cfg.ref_jahr, 0) : '–',
+          ? this._t('meter_start_prefix', 'Zï¿½hler 01.01.', 'Meter 01 Jan ') + cfg.berichtsjahr + ': ' + (cfg.jahres_start_kwh !== null ? cfg.jahres_start_kwh.toLocaleString(locale) : 'ï¿½') + ' kWh ? ' + this._t('current_prefix', 'aktuell: ', 'current: ') + (cur === null ? 'ï¿½' : cur.toLocaleString(locale, { maximumFractionDigits: 1 })) + ' kWh'
+          : 'ï¿½',
+        r: hasRef && Number.isFinite(cfg.ref_jahr) ? fmtKwh(cfg.ref_jahr, 0) : 'ï¿½',
         rs: this._t('reference_short', 'Referenz', 'Reference') + (cfg.meta?.has_reference_year ? ' ' + cfg.referenzjahr : '') + ' (Gesamt)',
         i: d.year,
         prog: prog.progJahr,
@@ -782,7 +788,7 @@ class EnergieMonitoringCard extends HTMLElement {
       orange,
       gray,
       stand: now.toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }),
-      curStr: cur === null ? '–' : cur.toLocaleString(locale, { maximumFractionDigits: 1 }) + ' kWh'
+      curStr: cur === null ? 'ï¿½' : cur.toLocaleString(locale, { maximumFractionDigits: 1 }) + ' kWh'
     };
   }
 
@@ -841,6 +847,15 @@ class EnergieMonitoringCard extends HTMLElement {
       pushWarn(this._t('warn_missing_year_start', 'Jahres-Startwert fehlt: year_start_meter_kwh setzen, damit Jahresverbrauch und Prognosen korrekt sind.', 'Missing year start value: set year_start_meter_kwh so yearly consumption and projections are correct.'));
     }
 
+    if (cfg.meta?.has_tariff_config && !cfg.meta?.has_billing_config) {
+      pushWarn(this._t('warn_billing_missing', 'Tarifdaten gesetzt, aber billing.* fehlt. Fuer den Kostenblock bitte billing.reference_cost_brutto_eur und billing.monthly_advance_brutto_eur setzen.', 'Tariff data is set, but billing.* is missing. For the cost block, please set billing.reference_cost_brutto_eur and billing.monthly_advance_brutto_eur.'));
+    }
+
+    if (!cfg.meta?.has_tariff_config && cfg.meta?.has_billing_config) {
+      pushWarn(this._t('warn_tariff_missing', 'Billing-Daten gesetzt, aber tariff.* fehlt. Fuer den Kostenblock bitte Tarifwerte ergï¿½nzen.', 'Billing data is set, but tariff.* is missing. Please add tariff values for the cost block.'));
+    }
+
+
     if (cfg.targets && cfg.targets.day_kwh > 0 && cfg.targets.year_kwh > 0) {
       const expectedYear = cfg.targets.day_kwh * ctx.yearDays;
       const ratio = expectedYear > 0 ? cfg.targets.year_kwh / expectedYear : 1;
@@ -854,13 +869,13 @@ class EnergieMonitoringCard extends HTMLElement {
     }
 
     if (bkw.solarGesamt !== null && bkw.solarExport !== null && bkw.solarExport > bkw.solarGesamt) {
-      pushWarn(this._t('warn_export_gt_total', 'Solar-Einspeisung ist größer als Solar-Gesamtproduktion. Sensorwerte prüfen.', 'Solar export is higher than total solar production. Please verify sensor values.'));
+      pushWarn(this._t('warn_export_gt_total', 'Solar-Einspeisung ist grï¿½ï¿½er als Solar-Gesamtproduktion. Sensorwerte prï¿½fen.', 'Solar export is higher than total solar production. Please verify sensor values.'));
     }
 
     if (d.year !== null && costs.projectedGross !== null && cfg.billing?.reference_cost_brutto_eur > 0) {
       const ratioCost = costs.projectedGross / cfg.billing.reference_cost_brutto_eur;
       if (ratioCost > 2.5) {
-        pushWarn(this._t('warn_cost_projection_high', 'Kostenprognose ist deutlich höher als Referenzjahr. Tarif- und Zählerwerte prüfen.', 'Cost projection is significantly higher than the reference year. Please verify tariff and meter values.'));
+        pushWarn(this._t('warn_cost_projection_high', 'Kostenprognose ist deutlich hï¿½her als Referenzjahr. Tarif- und Zï¿½hlerwerte prï¿½fen.', 'Cost projection is significantly higher than the reference year. Please verify tariff and meter values.'));
       }
     }
 
@@ -927,6 +942,14 @@ class EnergieMonitoringCard extends HTMLElement {
   }
 
   _renderCostsSection(cfg, costs) {
+    const showBkwSavings = (cfg.ui?.show_sections?.bkw !== false) && !!(cfg.entity_solar_today || cfg.entity_solar_total || cfg.entity_solar_export || cfg.bkw?.enabled);
+    const bkwSavingsItem = showBkwSavings ? `
+      <div class="kosten-item">
+        <span class="kosten-lbl">${this._t('bkw_savings_label', 'BKW-Ersparnis', 'Balcony PV savings')} ${cfg.berichtsjahr} (${this._t('self_consumption', 'Selbstverbrauch', 'Self-consumption')})</span>
+        <span class="kosten-val" style="color:#4ade80">${costs.bkwSavingsCurrent !== null ? this._eur(costs.bkwSavingsCurrent) : '\u2013'}</span>
+        <span class="kosten-sub">${costs.bkwSavingsYear !== null ? this._t('projection_prefix', 'Hochrechnung', 'Projection') + ': \u2248 ' + this._eur(costs.bkwSavingsYear) + ' ' + this._t('savings_per_year', 'Ersparnis/Jahr', 'savings/year') : ''}</span>
+      </div>
+    ` : '';
     return `
   <div class="kosten-block">
     <div class="kosten-hdr">&#128176; ${this._t('costs_header', 'Stromkosten-Hochrechnung', 'Electricity cost projection')} &nbsp;&middot;&nbsp; ${this._t('costs_basis_prefix', 'Basis: Abrechnung', 'Basis: billing')} ${cfg.referenzjahr}</div>
@@ -949,11 +972,7 @@ class EnergieMonitoringCard extends HTMLElement {
           : costs.forecastKwh.toFixed(0) + ' kWh ' + this._t('projection_short', 'Prognose', 'projection') + ' &nbsp;&middot;&nbsp; ' + (costs.diffToReference >= 0 ? '+' : '') + this._eur(costs.diffToReference) + ' vs. ' + cfg.referenzjahr
         }</span>
       </div>
-      <div class="kosten-item">
-        <span class="kosten-lbl">${this._t('bkw_savings_label', 'BKW-Ersparnis', 'Balcony PV savings')} ${cfg.berichtsjahr} (${this._t('self_consumption', 'Selbstverbrauch', 'Self-consumption')})</span>
-        <span class="kosten-val" style="color:#4ade80">${costs.bkwSavingsCurrent !== null ? this._eur(costs.bkwSavingsCurrent) : '\u2013'}</span>
-        <span class="kosten-sub">${costs.bkwSavingsYear !== null ? this._t('projection_prefix', 'Hochrechnung', 'Projection') + ': \u2248 ' + this._eur(costs.bkwSavingsYear) + ' ' + this._t('savings_per_year', 'Ersparnis/Jahr', 'savings/year') : ''}</span>
-      </div>
+      ${bkwSavingsItem}
     </div>
   </div>`;
   }
@@ -961,12 +980,12 @@ class EnergieMonitoringCard extends HTMLElement {
   _renderAmortizationSection(cfg, daysSinceBkw, gespartEur, restBetrag, amortization, amortStr, amortJahre, barCol, pct, bkwStartShort) {
     return `
   <div class="amor-block">
-    <div class="amor-hdr">&#128185; ${this._t('amort_header', 'Amortisation', 'Amortization')} &nbsp;&middot;&nbsp; ${this._t('amort_basis_prefix', 'Basis: Selbstverbrauch (PV - Einspeisung) ×', 'Basis: self-consumption (PV - export) ×')} ${cfg.strompreis.toFixed(2).replace('.', ',')} &euro;/kWh</div>
+    <div class="amor-hdr">&#128185; ${this._t('amort_header', 'Amortisation', 'Amortization')} &nbsp;&middot;&nbsp; ${this._t('amort_basis_prefix', 'Basis: Selbstverbrauch (PV - Einspeisung) ï¿½', 'Basis: self-consumption (PV - export) ï¿½')} ${cfg.strompreis.toFixed(2).replace('.', ',')} &euro;/kWh</div>
     <div class="amor-grid">
       <div class="amor-stat">
         <span class="amor-lbl">${this._t('amort_already', 'Bereits amortisiert', 'Already amortized')}</span>
         <span class="amor-val" style="color:#4ade80">${this._eur(gespartEur)}</span>
-        <span class="amor-sub">${daysSinceBkw !== null ? this._t('in_days_since_purchase', 'in ', 'in ') + daysSinceBkw + ' ' + this._t('days_since_purchase_suffix', 'Tagen seit Kauf', 'days since purchase') : this._t('amort_days_unknown', 'Betriebsdauer nicht berechenbar (Startdatum prüfen)', 'Runtime cannot be calculated (check start date)')}</span>
+        <span class="amor-sub">${daysSinceBkw !== null ? this._t('in_days_since_purchase', 'in ', 'in ') + daysSinceBkw + ' ' + this._t('days_since_purchase_suffix', 'Tagen seit Kauf', 'days since purchase') : this._t('amort_days_unknown', 'Betriebsdauer nicht berechenbar (Startdatum prï¿½fen)', 'Runtime cannot be calculated (check start date)')}</span>
       </div>
       <div class="amor-stat">
         <span class="amor-lbl">${this._t('amort_remaining', 'Noch ausstehend', 'Remaining')}</span>
@@ -1088,7 +1107,7 @@ class EnergieMonitoringCard extends HTMLElement {
       : this._t('bkw_days_unknown', 'Betriebstage unbekannt', 'operating days unknown');
     const bkwStartShort = bkw.validStart
       ? bkwStart.toLocaleDateString(cfgRuntime.locale || 'de-DE', { month: 'short', year: 'numeric' })
-      : this._t('bkw_invalid_start_short', 'Startdatum ungültig', 'Invalid start date');
+      : this._t('bkw_invalid_start_short', 'Startdatum ungï¿½ltig', 'Invalid start date');
     const bkwHints = [];
     const missingSensors = [];
     if (!cfg.entity_solar_today) missingSensors.push('entity_solar_today_kwh');
@@ -1102,16 +1121,16 @@ class EnergieMonitoringCard extends HTMLElement {
     if (cfg.entity_solar_total && bkw.solarGesamt === null) unavailableSensors.push(cfg.entity_solar_total);
     if (cfg.entity_solar_export && bkw.solarExport === null) unavailableSensors.push(cfg.entity_solar_export);
     if (unavailableSensors.length) {
-      bkwHints.push(this._t('bkw_hint_unavailable_prefix', 'Sensor ohne gültigen Zahlenwert: ', 'Sensor without valid numeric value: ') + unavailableSensors.join(', '));
+      bkwHints.push(this._t('bkw_hint_unavailable_prefix', 'Sensor ohne gï¿½ltigen Zahlenwert: ', 'Sensor without valid numeric value: ') + unavailableSensors.join(', '));
     }
     if (!bkw.validStart) {
-      bkwHints.push(this._t('bkw_hint_invalid_date', 'Ungültiges BKW-Startdatum. Bitte bkw.start_date (oder bkw_start_datum) als ISO-Datum setzen.', 'Invalid balcony PV start date. Please set bkw.start_date (or bkw_start_datum) as ISO date.'));
+      bkwHints.push(this._t('bkw_hint_invalid_date', 'Ungï¿½ltiges BKW-Startdatum. Bitte bkw.start_date (oder bkw_start_datum) als ISO-Datum setzen.', 'Invalid balcony PV start date. Please set bkw.start_date (or bkw_start_datum) as ISO date.'));
     }
     const bkwHintHtml = bkwHints.length
       ? `<div class="hint">${bkwHints.join('<br>')}</div>`
       : '';
     const warningsHtml = showWarnings && warnings.length
-      ? `<div class="warn-block"><div class="warn-title">${this._t('warn_title', 'Plausibilitäts-Hinweise', 'Plausibility notes')}</div><div class="warn-list">${warnings.map((w) => `<div class="warn-item">• ${w}</div>`).join('')}</div></div>`
+      ? `<div class="warn-block"><div class="warn-title">${this._t('warn_title', 'Plausibilitï¿½ts-Hinweise', 'Plausibility notes')}</div><div class="warn-list">${warnings.map((w) => `<div class="warn-item">ï¿½ ${w}</div>`).join('')}</div></div>`
       : '';
     const tableHtml = showTable ? this._renderTableSection(cfgRuntime, tr, green, red, orange, gray) : '';
     const bkwHtml = showBkw ? this._renderBkwSection(
@@ -1200,9 +1219,9 @@ td { padding: 12px 18px; vertical-align: middle; }
     const showFooterDetails = !!(cfg.meta?.has_einzug_datum || cfg.meta?.has_year_start_kwh);
     const yearTargetText = Number.isFinite(cfg.jahresziel)
       ? cfg.jahresziel.toLocaleString(cfg.locale || 'de-DE') + ' kWh'
-      : '–';
+      : 'ï¿½';
     const footerMeter = cfg.meta?.has_year_start_kwh
-      ? `${this._t('meter_reading_label', 'Zählerstand', 'Meter reading')}: ${curStr}`
+      ? `${this._t('meter_reading_label', 'Zï¿½hlerstand', 'Meter reading')}: ${curStr}`
       : '';
     const footerMoveIn = cfg.meta?.has_einzug_datum
       ? `${this._t('move_in_label', 'Einzug', 'Move-in')} ${cfg.einzug_datum}`
@@ -1257,6 +1276,10 @@ window.customCards.push({
   name: 'Energie Monitoring Card',
   description: 'Energie-Monitoring fuer Strom (inkl. Soll/Ist, Ziele und Erweiterungen)'
 });
+
+
+
+
 
 
 

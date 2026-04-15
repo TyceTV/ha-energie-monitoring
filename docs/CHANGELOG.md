@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.1 (2026-04-15)
+- UI-Fix: Im Kostenblock wird `BKW-Ersparnis` nur noch angezeigt, wenn PV/BKW wirklich konfiguriert ist
+- Bei reiner Strom-/Tarifkonfiguration ohne PV/BKW bleibt der BKW-Teil ausgeblendet
+
 ## v0.2.0 (2026-04-15)
 - Strom-Erweiterung: Tarif- und Kostenblock fuer die Hochrechnung dokumentiert und integriert
 - Kostenbereich wird automatisch nur dann gezeigt, wenn `tariff` und `billing` gemeinsam konfiguriert sind
