@@ -21,12 +21,12 @@ Geplante Erweiterung:
 5. Browser hart neu laden (`Strg+F5`)
 
 Die Ressource wird normalerweise automatisch angelegt als:
-- `/hacsfiles/ha-energie-monitoring/src/energie-monitoring-card.js`
+- `/hacsfiles/ha-energie-monitoring/ha-energie-monitoring.js`
 
 ### Manuell
-1. `src/energie-monitoring-card.js` nach `/config/www/` kopieren
+1. `ha-energie-monitoring.js` nach `/config/www/` kopieren
 2. `Einstellungen -> Dashboards -> Ressourcen -> Ressource hinzufuegen`
-3. URL: `/local/energie-monitoring-card.js`
+3. URL: `/local/ha-energie-monitoring.js`
 4. Typ: `JavaScript-Modul`
 5. Browser hart neu laden (`Strg+F5`)
 
@@ -133,6 +133,7 @@ Siehe [CHANGELOG.md](./CHANGELOG.md)
 
 - `kWh`: Kilowattstunde (Energieverbrauch/-erzeugung)
 - `ct/kWh`: Cent pro Kilowattstunde (Arbeitspreis)
+
 
 
 

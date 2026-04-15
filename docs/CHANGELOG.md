@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.1b (2026-04-15)
+- Hotfix: HACS Repository-Struktur fuer Dashboard-Validierung korrigiert
+- `hacs.json` in den Repository-Root verschoben
+- Live-Bundle als Root-Datei `ha-energie-monitoring.js` bereitgestellt
+- README-Resource-Pfade auf die Root-Datei aktualisiert
+
 ## v0.1.1a (2026-04-12)
 - Hotfix: saubere Trennung von Dev- und Live-Kartentypen umgesetzt
 - Live registriert nur noch `custom:energie-monitoring-card`
