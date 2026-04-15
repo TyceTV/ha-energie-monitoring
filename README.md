@@ -112,6 +112,29 @@ Was du bekommst:
   - mit `reference_year`: automatische Referenz aus Vorjahresverbrauch
   - ohne verwertbare Vorjahresdaten: Fallback auf `targets` (Hinweis als Plausibilitaetswarnung: Auto-Referenz aktiv)
 
+### Tarife und Kostenberechnung (`tariff` + `billing`)
+- Der Kostenblock wird automatisch eingeblendet, wenn `tariff` und `billing` gesetzt sind.
+- Fuer eine belastbare Kosten-Hochrechnung bitte beide Bloecke gemeinsam setzen:
+
+```yaml
+tariff:
+  energy_ct_per_kwh_net: 27.965
+  base_eur_per_year_net: 75.60
+  metering_eur_per_year_net: 18.92
+  vat_pct: 19
+billing:
+  reference_cost_brutto_eur: 1465.25
+  monthly_advance_brutto_eur: 135.00
+```
+
+Bedeutung:
+- `tariff.energy_ct_per_kwh_net`: Arbeitspreis netto in ct/kWh
+- `tariff.base_eur_per_year_net`: Grundpreis netto pro Jahr
+- `tariff.metering_eur_per_year_net`: Messstellenpreis netto pro Jahr
+- `tariff.vat_pct`: Mehrwertsteuer in Prozent
+- `billing.reference_cost_brutto_eur`: Gesamtjahreskosten brutto des Referenzjahres (laut Rechnung)
+- `billing.monthly_advance_brutto_eur`: monatlicher Abschlag brutto
+
 ## Wichtige Felder (Kurzueberblick)
 
 - `thresholds.good_pct`: ab welcher negativen Abweichung als Einsparung gilt

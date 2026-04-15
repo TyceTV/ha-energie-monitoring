@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.0 (2026-04-15)
+- Strom-Erweiterung: Tarif- und Kostenblock fuer die Hochrechnung dokumentiert und integriert
+- Kostenbereich wird automatisch nur dann gezeigt, wenn `tariff` und `billing` gemeinsam konfiguriert sind
+- Neue Plausibilitaetswarnungen fuer Teil-Konfigurationen (`tariff` ohne `billing` bzw. `billing` ohne `tariff`)
+- README um klaren Konfigurationsblock fuer Tarife/Kosten erweitert
+
 ## v0.1.1b (2026-04-15)
 - Hotfix: HACS Repository-Struktur fuer Dashboard-Validierung korrigiert
 - `hacs.json` in den Repository-Root verschoben

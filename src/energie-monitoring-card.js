@@ -274,11 +274,15 @@ class EnergieMonitoringCard extends HTMLElement {
     const hasExplicitCostsSection = hasOwn(showSections, 'costs');
     const hasExplicitAmortizationSection = hasOwn(showSections, 'amortization');
     const hasSolarEntities = !!(entitySolarToday || entitySolarTotal || entitySolarExport);
-    const hasCostConfig = hasFinite(
+    const hasTariffConfig = hasFinite(
       tariff.energy_ct_per_kwh_net, tariff.base_eur_per_year_net, tariff.metering_eur_per_year_net, tariff.vat_pct,
-      billing.reference_cost_brutto_eur, billing.monthly_advance_brutto_eur,
-      raw.arbeitspreis_ct, raw.grundpreis_jahr, raw.messst_jahr, raw.kosten_2025_brutto, raw.abschlag_brutto
+      raw.arbeitspreis_ct, raw.grundpreis_jahr, raw.messst_jahr
     );
+    const hasBillingConfig = hasFinite(
+      billing.reference_cost_brutto_eur, billing.monthly_advance_brutto_eur,
+      raw.kosten_2025_brutto, raw.abschlag_brutto
+    );
+    const hasCostConfig = hasTariffConfig && hasBillingConfig;
     const autoShowBkw = bkwEnabled && hasSolarEntities;
     const autoShowCosts = hasCostConfig;
     const autoShowAmortization = autoShowBkw && (hasOwn(raw, 'amortization') || hasOwn(raw, 'bkw'));
@@ -306,7 +310,9 @@ class EnergieMonitoringCard extends HTMLElement {
         has_einzug_datum: hasEinzugDatum,
         has_custom_subtitle: hasCustomSubtitle,
         has_targets_config: hasTargetsConfig,
-        has_reference_config: hasReferenceConfig
+        has_reference_config: hasReferenceConfig,
+        has_tariff_config: hasTariffConfig,
+        has_billing_config: hasBillingConfig
       },
       entities: {
         grid_total_kwh: entityGrid,
@@ -841,6 +847,15 @@ class EnergieMonitoringCard extends HTMLElement {
       pushWarn(this._t('warn_missing_year_start', 'Jahres-Startwert fehlt: year_start_meter_kwh setzen, damit Jahresverbrauch und Prognosen korrekt sind.', 'Missing year start value: set year_start_meter_kwh so yearly consumption and projections are correct.'));
     }
 
+    if (cfg.meta?.has_tariff_config && !cfg.meta?.has_billing_config) {
+      pushWarn(this._t('warn_billing_missing', 'Tarifdaten gesetzt, aber billing.* fehlt. Fuer den Kostenblock bitte billing.reference_cost_brutto_eur und billing.monthly_advance_brutto_eur setzen.', 'Tariff data is set, but billing.* is missing. For the cost block, please set billing.reference_cost_brutto_eur and billing.monthly_advance_brutto_eur.'));
+    }
+
+    if (!cfg.meta?.has_tariff_config && cfg.meta?.has_billing_config) {
+      pushWarn(this._t('warn_tariff_missing', 'Billing-Daten gesetzt, aber tariff.* fehlt. Fuer den Kostenblock bitte Tarifwerte ergänzen.', 'Billing data is set, but tariff.* is missing. Please add tariff values for the cost block.'));
+    }
+
+
     if (cfg.targets && cfg.targets.day_kwh > 0 && cfg.targets.year_kwh > 0) {
       const expectedYear = cfg.targets.day_kwh * ctx.yearDays;
       const ratio = expectedYear > 0 ? cfg.targets.year_kwh / expectedYear : 1;
@@ -1257,6 +1272,10 @@ window.customCards.push({
   name: 'Energie Monitoring Card',
   description: 'Energie-Monitoring fuer Strom (inkl. Soll/Ist, Ziele und Erweiterungen)'
 });
+
+
+
+
 
 
 
