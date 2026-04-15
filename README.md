@@ -135,6 +135,10 @@ Bedeutung:
 - `billing.reference_cost_brutto_eur`: Gesamtjahreskosten brutto des Referenzjahres (laut Rechnung)
 - `billing.monthly_advance_brutto_eur`: monatlicher Abschlag brutto
 
+Beispielansicht (Stromkosten-Block):
+
+![Stromkosten-Ansicht](images/ha-strom_stromkosten.png)
+
 ### PV/BKW-Erweiterung (`bkw` + Solarsensoren)
 
 Fuer den PV/BKW-Block werden zusaetzlich diese Sensoren erwartet:
@@ -155,6 +159,10 @@ bkw:
 
 - `mode: bkw` nutzt Bezeichnungen wie "Balkonkraftwerk" und "BKW-Ersparnis"
 - `mode: pv` nutzt Bezeichnungen wie "PV-Anlage" und "PV-Ersparnis"
+
+Beispielansicht (BKW/PV-Block):
+
+![BKW-PV-Ansicht](images/ha-strom_bkw_pv.png)
 
 ## Wichtige Felder (Kurzueberblick)
 
